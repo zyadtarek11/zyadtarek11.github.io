@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Mastery Assessment</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #6741d9;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 2.2em;
+        }
+
+        .instructions {
+            background-color: #f3f0ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 5px solid #6741d9;
+        }
+
+        .question-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+
+        .question-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .question {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: #3c3c3c;
+        }
+
+        .code-snippet {
+            background-color: #f5f5f5;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 10px 0;
+            border-left: 3px solid #6741d9;
+            overflow-x: auto;
+        }
+
+        .options {
+            margin-left: 20px;
+        }
+
+        .option {
+            margin-bottom: 10px;
+            transition: background-color 0.2s;
+            border-radius: 4px;
+        }
+
+        label {
+            cursor: pointer;
+            display: inline-block;
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        label:hover {
+            background-color: #f0f0f0;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #6741d9;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background-color: #5535b8;
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: none;
+        }
+
+        .score {
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #6741d9;
+        }
+
+        .feedback {
+            margin-top: 20px;
+        }
+
+        .correct {
+            background-color: rgba(76, 175, 80, 0.15);
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #4caf50;
+            margin-bottom: 15px;
+        }
+
+        .incorrect {
+            background-color: rgba(244, 67, 54, 0.15);
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #f44336;
+            margin-bottom: 15px;
+        }
+
+        .correct-answer {
+            font-weight: bold;
+            margin-top: 8px;
+            background-color: rgba(76, 175, 80, 0.1);
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        .explanation {
+            margin-top: 8px;
+            font-style: italic;
+            color: #555;
+            background-color: #f9f9f9;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .question-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS Mastery Assessment</h1>
+    
+    <div class="instructions">
+        <p><strong>Instructions:</strong> This is an open-book assessment testing your understanding of CSS concepts. You are allowed to search online for information. The quiz focuses on:</p>
+        <ul>
+            <li>Flexbox layout</li>
+            <li>Grid layout</li>
+            <li>Classes and IDs</li>
+            <li>Pseudo-elements and pseudo-classes</li>
+            <li>CSS units and positioning</li>
+        </ul>
+        <p>Select the best answer for each question and click "Submit Quiz" when finished. You will receive a score out of 20 points with detailed feedback.</p>
+    </div>
+    
+    <form id="quizForm">
+        <div id="questionsContainer">
+            <!-- Questions will be dynamically inserted here -->
+        </div>
+        
+        <button type="button" id="submitBtn">Submit Quiz</button>
+    </form>
+    
+    <div id="results">
+        <div class="score" id="scoreDisplay"></div>
+        <div id="feedback" class="feedback"></div>
+    </div>
+    
+    <script>
+        // Questions data structure
+        const questions = [
+            {
+                question: "Which property is used to define how flex items grow to fill available space?",
+                options: [
+                    "flex-expand",
+                    "flex-grow",
+                    "flex-fill",
+                    "flex-stretch"
+                ],
+                correctAnswer: 1,
+                explanation: "flex-grow defines how much a flex item can grow relative to other flex items when there's extra space in the container."
+            },
+            {
+                question: "In the CSS Grid Layout, which property sets the number and width of columns in a grid container?",
+                options: [
+                    "grid-template-rows",
+                    "grid-template-columns",
+                    "grid-column-layout",
+                    "grid-auto-columns"
+                ],
+                correctAnswer: 1,
+                explanation: "grid-template-columns defines the columns of the grid with their track size, and the size of the gutters between them."
+            },
+            {
+                question: "What's the difference between a class and an ID selector in CSS?",
+                options: [
+                    "Classes are faster to render than IDs",
+                    "IDs can be used multiple times on a page, while classes must be unique",
+                    "Classes can be reused across multiple elements, while IDs should be unique to a single element",
+                    "IDs are only for JavaScript, while classes are for CSS"
+                ],
+                correctAnswer: 2,
+                explanation: "A class can be applied to multiple elements on a page, while an ID should be unique and used only once per page."
+            },
+            {
+                question: "Which of the following is a pseudo-element?",
+                options: [
+                    ":hover",
+                    ":active",
+                    "::before",
+                    ":focus"
+                ],
+                correctAnswer: 2,
+                explanation: "::before is a pseudo-element that creates a pseudo-element that is the first child of the selected element. Pseudo-elements use double colons (::) while pseudo-classes use a single colon (:)."
+            },
+            {
+                question: "What CSS property would you use to place an element 20px from the left edge of its nearest positioned ancestor?",
+                options: [
+                    "margin-left: 20px;",
+                    "padding-left: 20px;",
+                    "left: 20px;",
+                    "indent: 20px;"
+                ],
+                correctAnswer: 2,
+                explanation: "The 'left' property positions an element from the left edge of its containing block, but only works when position is set to absolute, relative, fixed, or sticky."
+            },
+            {
+                question: "Which property aligns flex items along the cross axis in a flex container?",
+                options: [
+                    "justify-content",
+                    "align-items",
+                    "flex-align",
+                    "cross-align"
+                ],
+                correctAnswer: 1,
+                explanation: "align-items aligns flex items along the cross axis (perpendicular to the main axis) of the flex container."
+            },
+            {
+                question: "Given the following HTML, what CSS selector would target only the middle paragraph?\n<div>\n  <p>First paragraph</p>\n  <p>Middle paragraph</p>\n  <p>Last paragraph</p>\n</div>",
+                options: [
+                    "div p:nth-child(2)",
+                    "div p:first-child + p",
+                    "div p:nth-of-type(2)",
+                    "All of the above"
+                ],
+                correctAnswer: 3,
+                explanation: "All three selectors would target the middle paragraph. :nth-child(2) selects the second child of div (which is the middle p), :first-child + p selects the sibling after the first child, and :nth-of-type(2) selects the second paragraph."
+            },
+            {
+                question: "Which of the following is a relative unit in CSS?",
+                options: [
+                    "px",
+                    "cm",
+                    "em",
+                    "pt"
+                ],
+                correctAnswer: 2,
+                explanation: "em is a relative unit that is relative to the font-size of the element. 1em equals the font size of the current element."
+            },
+            {
+                question: "What is the default value of the 'flex-direction' property?",
+                options: [
+                    "column",
+                    "row",
+                    "row-reverse",
+                    "column-reverse"
+                ],
+                correctAnswer: 1,
+                explanation: "The default value of flex-direction is 'row', which lays out flex items horizontally from left to right in languages like English."
+            },
+            {
+                question: "Which CSS property would you use to make an element stick to the top of the viewport when scrolling?",
+                options: [
+                    "position: absolute;",
+                    "position: fixed;",
+                    "position: sticky;",
+                    "position: relative;"
+                ],
+                correctAnswer: 2,
+                explanation: "position: sticky; makes an element 'stick' when it reaches a specified position during scrolling. It toggles between relative and fixed positioning based on the scroll position."
+            },
+            {
+                question: "In the CSS Grid, what does the 'fr' unit represent?",
+                options: [
+                    "A fixed-ratio measurement",
+                    "A fraction of the available space",
+                    "The minimum free space required",
+                    "A fractional pixel measurement"
+                ],
+                correctAnswer: 1,
+                explanation: "The 'fr' unit represents a fraction of the available space in the grid container. For example, 1fr means one part of the available space."
+            },
+            {
+                question: "How would you select all <a> elements that have a href attribute in CSS?",
+                options: [
+                    "a[href]",
+                    "a.href",
+                    "a#href",
+                    "a:href"
+                ],
+                correctAnswer: 0,
+                explanation: "The attribute selector a[href] selects all <a> elements that have a href attribute, regardless of its value."
+            },
+            {
+                question: "What will happen if you apply 'display: flex;' to a parent element?",
+                options: [
+                    "The parent becomes invisible",
+                    "The parent becomes a flex container and its children become flex items",
+                    "The parent becomes a grid container",
+                    "The parent becomes absolutely positioned"
+                ],
+                correctAnswer: 1,
+                explanation: "When you apply 'display: flex;' to an element, it becomes a flex container and its direct children become flex items that can be manipulated with flexbox properties."
+            },
+            {
+                question: "Which pseudo-class is applied to an element when the user hovers over it?",
+                options: [
+                    ":active",
+                    ":visited",
+                    ":hover",
+                    ":focus"
+                ],
+                correctAnswer: 2,
+                explanation: "The :hover pseudo-class is triggered when a user moves their cursor over an element, allowing you to define styles for this mouse interaction state."
+            },
+            {
+                question: "Which CSS property controls the space between grid cells?",
+                options: [
+                    "grid-gap",
+                    "grid-spacing",
+                    "grid-margin",
+                    "grid-padding"
+                ],
+                correctAnswer: 0,
+                explanation: "grid-gap (or gap in newer specifications) is a shorthand property for row-gap and column-gap, specifying the size of the space between grid cells."
+            },
+            {
+                question: "If an element has 'position: absolute;', what does it position itself relative to?",
+                options: [
+                    "The viewport",
+                    "Its parent element, regardless of positioning",
+                    "Its nearest positioned ancestor (or the document body if none exists)",
+                    "Only the document body"
+                ],
+                correctAnswer: 2,
+                explanation: "An absolutely positioned element is positioned relative to its nearest positioned ancestor (an element with position other than static). If there is no positioned ancestor, it positions relative to the document body."
+            },
+            {
+                question: "What does the '::after' pseudo-element do?",
+                options: [
+                    "Selects elements that come after the specified element",
+                    "Creates content after all child elements",
+                    "Creates a pseudo-element that is the last child of the selected element",
+                    "Applies styles after other styles have been applied"
+                ],
+                correctAnswer: 2,
+                explanation: "The ::after pseudo-element creates a pseudo-element that is the last child of the selected element, allowing you to insert content or style elements after the content of the element."
+            },
+            {
+                question: "Which of the following is true about the 'vw' unit in CSS?",
+                options: [
+                    "It represents 1% of the viewport width",
+                    "It represents 1% of the element's width",
+                    "It represents the visual weight of an element",
+                    "It's equivalent to 1 pixel on high-resolution screens"
+                ],
+                correctAnswer: 0,
+                explanation: "The 'vw' unit stands for viewport width. 1vw is equal to 1% of the width of the viewport (browser window size)."
+            },
+            {
+                question: "What's the key difference between 'justify-content' in Flexbox and 'justify-items' in Grid?",
+                options: [
+                    "They are identical properties that work in both systems",
+                    "'justify-content' aligns flex items along the main axis, while 'justify-items' aligns grid items along their inline (row) axis within their grid areas",
+                    "'justify-content' is for horizontal alignment, while 'justify-items' is only for vertical alignment",
+                    "'justify-content' applies to the container, while 'justify-items' applies to individual items"
+                ],
+                correctAnswer: 1,
+                explanation: "'justify-content' in Flexbox aligns items along the main axis of the flex container. 'justify-items' in Grid aligns grid items along their inline (row) axis within their grid areas."
+            },
+            {
+                question: "Which of the following units would maintain its size regardless of parent element font size changes?",
+                options: [
+                    "em",
+                    "rem",
+                    "%",
+                    "vh"
+                ],
+                correctAnswer: 1,
+                explanation: "'rem' stands for 'root em' and is relative to the font-size of the root element (html), not the parent element like 'em'. This makes it consistent regardless of nested element font size changes."
+            }
+        ];
+
+        // Generate quiz questions in the DOM
+        function generateQuiz() {
+            const container = document.getElementById('questionsContainer');
+            
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question';
+                questionText.textContent = `${index + 1}. ${q.question}`;
+                
+                // Check if the question contains code snippet
+                if (q.question.includes('\n')) {
+                    // Replace the question text with only the first part
+                    const parts = q.question.split('\n');
+                    questionText.textContent = `${index + 1}. ${parts[0]}`;
+                    
+                    // Create a code snippet div for the code part
+                    const codeSnippet = document.createElement('div');
+                    codeSnippet.className = 'code-snippet';
+                    codeSnippet.textContent = parts.slice(1).join('\n');
+                    
+                    questionDiv.appendChild(questionText);
+                    questionDiv.appendChild(codeSnippet);
+                } else {
+                    questionDiv.appendChild(questionText);
+                }
+                
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+                
+                q.options.forEach((option, optionIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = `question${index}`;
+                    radioInput.id = `q${index}o${optionIndex}`;
+                    radioInput.value = optionIndex;
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${index}o${optionIndex}`;
+                    label.textContent = option;
+                    
+                    optionDiv.appendChild(radioInput);
+                    optionDiv.appendChild(label);
+                    optionsDiv.appendChild(optionDiv);
+                });
+                
+                if (!questionDiv.contains(questionText)) {
+                    questionDiv.appendChild(questionText);
+                }
+                questionDiv.appendChild(optionsDiv);
+                container.appendChild(questionDiv);
+            });
+        }
+
+        // Calculate score and show results
+        function calculateResults() {
+            let score = 0;
+            const feedbackContainer = document.getElementById('feedback');
+            feedbackContainer.innerHTML = '';
+            
+            questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'question-feedback';
+                
+                // Question text
+                const questionText = document.createElement('p');
+                questionText.textContent = `${index + 1}. ${q.question.split('\n')[0]}`;
+                feedbackDiv.appendChild(questionText);
+                
+                if (!selectedOption) {
+                    // Not answered
+                    feedbackDiv.classList.add('incorrect');
+                    
+                    const feedbackText = document.createElement('p');
+                    feedbackText.textContent = 'Not answered';
+                    feedbackDiv.appendChild(feedbackText);
+                    
+                    const correctAnswerText = document.createElement('p');
+                    correctAnswerText.className = 'correct-answer';
+                    correctAnswerText.textContent = `Correct answer: ${q.options[q.correctAnswer]}`;
+                    feedbackDiv.appendChild(correctAnswerText);
+                } else if (parseInt(selectedOption.value) === q.correctAnswer) {
+                    // Correct answer
+                    score++;
+                    feedbackDiv.classList.add('correct');
+                    
+                    const feedbackText = document.createElement('p');
+                    feedbackText.textContent = 'Correct!';
+                    feedbackDiv.appendChild(feedbackText);
+                    
+                    // Add explanation
+                    const explanationText = document.createElement('p');
+                    explanationText.className = 'explanation';
+                    explanationText.textContent = q.explanation;
+                    feedbackDiv.appendChild(explanationText);
+                } else {
+                    // Wrong answer
+                    feedbackDiv.classList.add('incorrect');
+                    
+                    const feedbackText = document.createElement('p');
+                    feedbackText.textContent = `Your answer: ${q.options[parseInt(selectedOption.value)]}`;
+                    feedbackDiv.appendChild(feedbackText);
+                    
+                    const correctAnswerText = document.createElement('p');
+                    correctAnswerText.className = 'correct-answer';
+                    correctAnswerText.textContent = `Correct answer: ${q.options[q.correctAnswer]}`;
+                    feedbackDiv.appendChild(correctAnswerText);
+                    
+                    // Add explanation
+                    const explanationText = document.createElement('p');
+                    explanationText.className = 'explanation';
+                    explanationText.textContent = q.explanation;
+                    feedbackDiv.appendChild(explanationText);
+                }
+                
+                feedbackContainer.appendChild(feedbackDiv);
+            });
+            
+            // Show final score
+            document.getElementById('scoreDisplay').textContent = `Your Score: ${score}/20`;
+            
+            // Show results section
+            document.getElementById('results').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize the quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            generateQuiz();
+            
+            // Set up submit button
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                calculateResults();
+            });
+        });
+    </script>
+</body>
+</html>
