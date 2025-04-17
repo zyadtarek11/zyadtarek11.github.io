@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Autocomplete Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .instructions {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 5px solid #1976d2;
+        }
+
+        .question-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .question {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .options {
+            margin-left: 20px;
+        }
+
+        .option {
+            margin-bottom: 10px;
+        }
+
+        label {
+            cursor: pointer;
+            display: inline-block;
+            /* Removed width: 100% to prevent stretching over multiple lines */
+            padding: 5px;
+            border-radius: 4px;
+            vertical-align: middle; /* Align label text with radio button */
+        }
+        
+        label:hover {
+            background-color: #f0f0f0;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            vertical-align: middle; /* Align radio button with label text */
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #1565c0;
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none; /* Initially hidden */
+        }
+
+        .score {
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .feedback {
+            margin-top: 20px;
+        }
+
+        .question-feedback {
+             margin-bottom: 15px;
+             padding: 10px;
+             border-radius: 4px;
+        }
+
+        .correct {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4caf50;
+        }
+
+        .incorrect {
+            background-color: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid #f44336;
+        }
+
+        .feedback p {
+            margin: 5px 0; /* Reduced margin for feedback text */
+        }
+
+        .correct-answer, .explanation {
+            font-weight: normal; /* Correct answer doesn't need to be bold */
+            margin-top: 8px;
+            font-size: 0.95em;
+        }
+        .explanation {
+             color: #555; /* Slightly dimmer color for explanation */
+             font-style: italic;
+        }
+
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .question-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Autocomplete Script Quiz</h1>
+
+    <div class="instructions">
+        <p><strong>Instructions:</strong> This quiz assesses your understanding of the provided JavaScript code for the fruit autocomplete feature. Please read each question carefully and select the best answer based on the script's functionality.</p>
+        <p>The quiz contains 10 questions. Click "Submit Quiz" when finished to see your score and feedback.</p>
+    </div>
+
+    <form id="quizForm">
+        <div id="questionsContainer">
+            </div>
+
+        <button type="button" id="submitBtn">Submit Quiz</button>
+    </form>
+
+    <div id="results">
+        <div class="score" id="scoreDisplay"></div>
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <script>
+        // Questions data structure
+        const questions = [
+            {
+                question: "What is the primary source of the fruit names used in the suggestions?",
+                options: [
+                    "Fetched from a server API",
+                    "Defined directly in the script within the 'fruits' array",
+                    "Stored in localStorage under the key 'allFruits'",
+                    "Read from an HTML <datalist> element"
+                ],
+                correctAnswer: 1,
+                explanation: "The script initializes a constant array named 'fruits' containing a list of fruit strings: `const fruits = [...]`."
+            },
+            {
+                question: "Based on the 'allowedLetters' array (`['f', 'a', 'b']`), which of these fruits would potentially appear in the suggestions if the user types a matching query?",
+                options: [
+                    "fig",
+                    "grape",
+                    "orange",
+                    "cherry"
+                ],
+                correctAnswer: 0,
+                explanation: "The filter condition `allowedLetters.includes(fruit[0])` checks if the *first letter* of the fruit is present in the `allowedLetters` array. Only 'fig' starts with 'f', which is in the allowed list."
+            },
+            {
+                question: "What does `JSON.parse(localStorage.getItem('fruitPriorities')) || {}` do when the script first runs on a browser where it hasn't run before?",
+                options: [
+                    "It causes an error because 'fruitPriorities' doesn't exist in localStorage.",
+                    "It initializes the 'priorities' variable as an empty object `{}`.",
+                    "It initializes the 'priorities' variable as null.",
+                    "It fetches default priorities from the 'fruits' array."
+                ],
+                correctAnswer: 1,
+                explanation: "`localStorage.getItem('fruitPriorities')` returns `null` if the item doesn't exist. The `|| {}` (OR operator) provides a default value (an empty object) when the left side is falsy (like `null`), and `JSON.parse(null)` would otherwise cause an error."
+            },
+            {
+                question: "When does the list of suggestions (`suggestionsBox`) get updated or populated?",
+                options: [
+                    "Only when the page first loads.",
+                    "Every time the user presses the 'Enter' key in the input field.",
+                    "Every time the user types or deletes a character in the input field (`#search`).",
+                    "Only when the user clicks the search button (`#searchBtn`)."
+                ],
+                correctAnswer: 2,
+                explanation: "The code `input.addEventListener('input', () => { ... });` attaches a listener that runs the suggestion logic whenever the value of the input field changes (i.e., on 'input' events)."
+            },
+            {
+                question: "How are the filtered suggestions sorted before being displayed?",
+                options: [
+                    "Alphabetically from A to Z.",
+                    "By the length of the fruit name (shortest first).",
+                    "Randomly.",
+                    "Based on how many times each fruit has been clicked previously (most clicked first)."
+                ],
+                correctAnswer: 3,
+                explanation: "The `.sort((a, b) => { ... return priorityB - priorityA; })` function sorts the fruits. It uses the `priorities` object (loaded from localStorage) to give higher priority (appear first) to fruits that have been clicked more often. `priorityB - priorityA` sorts in descending order of priority."
+            },
+             {
+                question: "What happens to the `priorities` object and `localStorage` when a user clicks on a suggestion (e.g., 'apple')?",
+                options: [
+                    "The clicked fruit is removed from the `priorities` object.",
+                    "The priority count for the clicked fruit is incremented, and the updated `priorities` object is saved back to localStorage.",
+                    "Only the input field's value is updated; `priorities` and localStorage are unaffected.",
+                    "A new entry with the timestamp of the click is added to localStorage."
+                ],
+                correctAnswer: 1,
+                explanation: "Inside the `div.onclick` handler, `priorities[fruit] = (priorities[fruit] || 0) + 1;` increments the count for the clicked fruit (or sets it to 1 if it wasn't there), and `localStorage.setItem('fruitPriorities', JSON.stringify(priorities));` saves the entire updated object back to localStorage."
+            },
+             {
+                question: "How are the suggestion items (like 'apple', 'banana') added to the webpage visually?",
+                options: [
+                    "By setting the `innerHTML` of the `suggestionsBox` with `<option>` tags.",
+                    "By creating a new `<div>` element for each suggestion, setting its `textContent`, and appending it to the `suggestionsBox`.",
+                    "By directly modifying the CSS to make hidden elements visible.",
+                    "By using the `document.write()` method."
+                ],
+                correctAnswer: 1,
+                explanation: "The code uses `document.createElement('div')`, sets `div.textContent = fruit`, assigns a class `div.className = 'suggestion'`, and then `suggestionsBox.appendChild(div)` for each filtered fruit."
+            },
+             {
+                question: "What action triggers the `performSearch` function?",
+                options: [
+                    "Typing text into the '#search' input field.",
+                    "Clicking anywhere outside the search container.",
+                    "Clicking on one of the suggestion divs.",
+                    "Clicking the button with the ID '#searchBtn'."
+                ],
+                correctAnswer: 3,
+                explanation: "The line `searchBtn.addEventListener('click', performSearch);` explicitly attaches the `performSearch` function to the click event of the element stored in the `searchBtn` variable."
+            },
+             {
+                question: "What is the purpose of `encodeURIComponent(query)` in the `performSearch` function?",
+                options: [
+                    "To convert the query to uppercase.",
+                    "To encrypt the search query for security.",
+                    "To ensure the query text is correctly formatted for inclusion in a URL, handling spaces and special characters.",
+                    "To check if the query exists in the `fruits` array."
+                ],
+                correctAnswer: 2,
+                explanation: "`encodeURIComponent` is used to encode special characters (like spaces, &, ?, etc.) in the query so they can be safely passed as part of a URL parameter (`?q=...`) without breaking the URL structure."
+            },
+             {
+                question: "Under which condition does the `suggestionsBox.innerHTML = ''` line execute based on the `document.addEventListener('click', ...)` listener?",
+                options: [
+                    "When the user clicks inside the search input field.",
+                    "When the user clicks on any suggestion div.",
+                    "When the user clicks anywhere on the page *except* within the element having the class 'search-container' (or its children).",
+                    "Only when the search button is clicked."
+                ],
+                correctAnswer: 2,
+                explanation: "The event listener checks `!e.target.closest('.search-container')`. `closest('.search-container')` finds the nearest ancestor (or the element itself) that matches the selector. If the click happens *outside* an element with the class 'search-container', `closest` returns `null`, `!null` is true, and the suggestions are cleared."
+            }
+        ];
+
+        // Generate quiz questions in the DOM
+        function generateQuiz() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = ''; // Clear previous questions if any
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.setAttribute('data-question-index', index); // Add index for feedback linking
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question';
+                questionText.textContent = `${index + 1}. ${q.question}`;
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+
+                q.options.forEach((option, optionIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = `question${index}`;
+                    radioInput.id = `q${index}o${optionIndex}`;
+                    radioInput.value = optionIndex;
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${index}o${optionIndex}`;
+                    label.textContent = option;
+
+                    optionDiv.appendChild(radioInput);
+                    optionDiv.appendChild(label);
+                    optionsDiv.appendChild(optionDiv);
+                });
+
+                questionDiv.appendChild(questionText);
+                questionDiv.appendChild(optionsDiv);
+                container.appendChild(questionDiv);
+            });
+        }
+
+        // Calculate score and show results
+        function calculateResults() {
+            let score = 0;
+            const feedbackContainer = document.getElementById('feedback');
+            const resultsContainer = document.getElementById('results');
+            const questionContainers = document.querySelectorAll('.question-container');
+            feedbackContainer.innerHTML = ''; // Clear previous feedback
+
+            questions.forEach((q, index) => {
+                const selectedOptionInput = document.querySelector(`input[name="question${index}"]:checked`);
+                const questionContainer = questionContainers[index]; // Get the specific container
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'question-feedback';
+
+                // Question text for context
+                const questionText = document.createElement('p');
+                questionText.innerHTML = `<strong>Question ${index + 1}:</strong> ${q.question}`;
+                feedbackDiv.appendChild(questionText);
+
+                const userAnswerText = document.createElement('p');
+                const correctAnswerText = document.createElement('p');
+                correctAnswerText.className = 'correct-answer';
+                const explanationText = document.createElement('p');
+                explanationText.className = 'explanation';
+                explanationText.innerHTML = `<em>Explanation:</em> ${q.explanation}`;
+
+
+                if (!selectedOptionInput) {
+                    // Not answered
+                    feedbackDiv.classList.add('incorrect');
+                    userAnswerText.textContent = 'Your answer: Not answered';
+                    correctAnswerText.innerHTML = `Correct answer: ${q.options[q.correctAnswer]}`;
+
+                    // Style the question container in the form
+                    questionContainer.style.borderLeft = '4px solid #f44336'; // Red border for incorrect/unanswered
+                    questionContainer.style.backgroundColor = 'rgba(244, 67, 54, 0.05)';
+
+
+                } else {
+                    const selectedValue = parseInt(selectedOptionInput.value);
+                    userAnswerText.textContent = `Your answer: ${q.options[selectedValue]}`;
+
+                    if (selectedValue === q.correctAnswer) {
+                         // Correct answer
+                        score++;
+                        feedbackDiv.classList.add('correct');
+                        correctAnswerText.innerHTML = `Correct!`; // Simple confirmation
+
+                         // Style the question container in the form
+                        questionContainer.style.borderLeft = '4px solid #4caf50'; // Green border for correct
+                         questionContainer.style.backgroundColor = 'rgba(76, 175, 80, 0.05)';
+
+
+                    } else {
+                        // Wrong answer
+                        feedbackDiv.classList.add('incorrect');
+                        correctAnswerText.innerHTML = `Correct answer: ${q.options[q.correctAnswer]}`;
+
+                        // Style the question container in the form
+                        questionContainer.style.borderLeft = '4px solid #f44336'; // Red border for incorrect
+                        questionContainer.style.backgroundColor = 'rgba(244, 67, 54, 0.05)';
+                    }
+                }
+
+                feedbackDiv.appendChild(userAnswerText);
+                feedbackDiv.appendChild(correctAnswerText);
+                feedbackDiv.appendChild(explanationText); // Add explanation regardless of correctness
+                feedbackContainer.appendChild(feedbackDiv);
+            });
+
+            // Show final score
+            document.getElementById('scoreDisplay').textContent = `Your Score: ${score} / ${questions.length}`;
+
+            // Show results section
+            resultsContainer.style.display = 'block';
+
+            // Scroll to results
+            resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Initialize the quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            generateQuiz();
+
+            // Set up submit button
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                calculateResults();
+            });
+        });
+    </script>
+</body>
+</html>
