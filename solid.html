@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOLID Principles Knowledge Assessment</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .instructions {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 5px solid #1976d2;
+        }
+
+        .question-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .question {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .options {
+            margin-left: 20px;
+        }
+
+        .option {
+            margin-bottom: 10px;
+        }
+
+        label {
+            cursor: pointer;
+            display: inline-block;
+            width: 100%;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        label:hover {
+            background-color: #f0f0f0;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #1565c0;
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .score {
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .feedback {
+            margin-top: 20px;
+        }
+
+        .correct {
+            background-color: rgba(76, 175, 80, 0.2);
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .incorrect {
+            background-color: rgba(244, 67, 54, 0.2);
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 4px solid #f44336;
+        }
+
+        .correct-answer {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .question-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>SOLID Principles Knowledge Assessment</h1>
+    
+    <div class="instructions">
+        <p><strong>Instructions:</strong> This quiz tests your understanding of the SOLID principles in software design. Select the best answer for each question and click "Submit Quiz" when finished.</p>
+    </div>
+    
+    <form id="quizForm">
+        <div id="questionsContainer">
+            <!-- Questions will be dynamically inserted here -->
+        </div>
+        
+        <button type="button" id="submitBtn">Submit Quiz</button>
+    </form>
+    
+    <div id="results">
+        <div class="score" id="scoreDisplay"></div>
+        <div id="feedback" class="feedback"></div>
+    </div>
+    
+    <script>
+        // Questions data structure for SOLID principles
+        const questions = [
+            {
+                question: "What does the 'S' in SOLID stand for?",
+                options: [
+                    "Single Responsibility Principle",
+                    "Service Responsibility Principle",
+                    "Solid Design Principle",
+                    "System Responsibility Principle"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What is the main goal of the Single Responsibility Principle (SRP)?",
+                options: [
+                    "Each class should have only one reason to change",
+                    "Classes should be reusable in multiple systems",
+                    "Classes should contain all the methods for a particular domain",
+                    "Classes should have very few methods"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What does the 'O' in SOLID stand for?",
+                options: [
+                    "Open/Closed Principle",
+                    "Object-Oriented Principle",
+                    "Optional Interface Principle",
+                    "Optimization Principle"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What does the Open/Closed Principle (OCP) state?",
+                options: [
+                    "Software entities should be open for extension, but closed for modification",
+                    "Software entities should be open for extension and modification",
+                    "Software entities should be closed for both extension and modification",
+                    "Software entities should be open for modifications only"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What does the 'L' in SOLID stand for?",
+                options: [
+                    "Liskov Substitution Principle",
+                    "Low-Level Design Principle",
+                    "Loose Coupling Principle",
+                    "Language Substitution Principle"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "The Liskov Substitution Principle (LSP) states that:",
+                options: [
+                    "Derived classes must be substitutable for their base classes without altering the behavior of the program",
+                    "Derived classes should not implement base class methods",
+                    "Derived classes can modify base class behavior completely",
+                    "Base classes should never be used in production code"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What does the 'I' in SOLID stand for?",
+                options: [
+                    "Interface Segregation Principle",
+                    "Inheritance Segregation Principle",
+                    "Interface Standard Principle",
+                    "Interface Implementation Principle"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "The Interface Segregation Principle (ISP) suggests that:",
+                options: [
+                    "Clients should not be forced to depend on interfaces they do not use",
+                    "Classes should have as many methods as possible",
+                    "Interfaces should have all the methods required by the client",
+                    "Classes should implement only one interface"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What does the 'D' in SOLID stand for?",
+                options: [
+                    "Dependency Inversion Principle",
+                    "Data Inversion Principle",
+                    "Design Inversion Principle",
+                    "Domain Inversion Principle"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "The Dependency Inversion Principle (DIP) states that:",
+                options: [
+                    "High-level modules should not depend on low-level modules. Both should depend on abstractions",
+                    "Low-level modules should depend on high-level modules",
+                    "High-level modules should depend on high-level modules",
+                    "Modules should depend on concrete implementations"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Which SOLID principle aims to reduce the impact of changes in the system?",
+                options: [
+                    "Single Responsibility Principle",
+                    "Open/Closed Principle",
+                    "Liskov Substitution Principle",
+                    "Dependency Inversion Principle"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which of the following is an example of applying the Single Responsibility Principle?",
+                options: [
+                    "A class that handles database operations and user interface logic",
+                    "A class that handles only one type of logic, such as logging",
+                    "A class that handles different types of data transformations",
+                    "A class that processes both network requests and authentication"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which SOLID principle is violated when you change a base class to add functionality to a derived class?",
+                options: [
+                    "Single Responsibility Principle",
+                    "Open/Closed Principle",
+                    "Liskov Substitution Principle",
+                    "Dependency Inversion Principle"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which principle would you use to avoid making clients depend on methods they don't use?",
+                options: [
+                    "Liskov Substitution Principle",
+                    "Interface Segregation Principle",
+                    "Dependency Inversion Principle",
+                    "Single Responsibility Principle"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is a key advantage of applying the Dependency Inversion Principle?",
+                options: [
+                    "It reduces the coupling between high-level modules and low-level modules",
+                    "It makes high-level modules dependent on low-level modules",
+                    "It makes high-level modules larger and more complex",
+                    "It forces all classes to implement interfaces"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What type of class is most likely to violate the Liskov Substitution Principle?",
+                options: [
+                    "A class that modifies the behavior of a base class method",
+                    "A class that extends another class without modifying any methods",
+                    "A class that implements several interfaces",
+                    "A class that only uses static methods"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "The Open/Closed Principle is violated when:",
+                options: [
+                    "New features are added by modifying existing code",
+                    "New features are added by creating new classes",
+                    "Features are added by creating new interfaces",
+                    "Code is restructured to improve maintainability"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Which of the following is a valid application of Interface Segregation?",
+                options: [
+                    "A class that implements a large, complex interface with many methods",
+                    "A class that implements multiple small interfaces, each focusing on one responsibility",
+                    "A class that implements an interface but never uses its methods",
+                    "A class that combines several related interfaces into one"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which SOLID principle helps reduce the risk of tightly coupled code?",
+                options: [
+                    "Liskov Substitution Principle",
+                    "Dependency Inversion Principle",
+                    "Interface Segregation Principle",
+                    "Single Responsibility Principle"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is the impact of not applying the SOLID principles?",
+                options: [
+                    "The code may become harder to maintain, understand, and extend",
+                    "The code will always be easy to understand and extend",
+                    "The code will be faster and more efficient",
+                    "The code will be immune to errors"
+                ],
+                correctAnswer: 0
+            }
+        ];
+
+        // Function to generate the quiz
+        const quizForm = document.getElementById('quizForm');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const submitBtn = document.getElementById('submitBtn');
+        const results = document.getElementById('results');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const feedback = document.getElementById('feedback');
+        
+        // Render the questions dynamically
+        function renderQuestions() {
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question-container');
+                
+                const questionElement = document.createElement('div');
+                questionElement.classList.add('question');
+                questionElement.innerText = `${index + 1}. ${q.question}`;
+                
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+                
+                q.options.forEach((option, i) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.classList.add('option');
+                    
+                    const optionLabel = document.createElement('label');
+                    const optionInput = document.createElement('input');
+                    optionInput.type = 'radio';
+                    optionInput.name = `question${index}`;
+                    optionInput.value = i;
+                    
+                    optionLabel.appendChild(optionInput);
+                    optionLabel.appendChild(document.createTextNode(option));
+                    
+                    optionDiv.appendChild(optionLabel);
+                    optionsDiv.appendChild(optionDiv);
+                });
+                
+                questionDiv.appendChild(questionElement);
+                questionDiv.appendChild(optionsDiv);
+                
+                questionsContainer.appendChild(questionDiv);
+            });
+        }
+
+        // Calculate score and show results
+        function calculateResults() {
+            let score = 0;
+            let incorrectAnswers = [];
+
+            questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption) {
+                    const answer = parseInt(selectedOption.value);
+                    if (answer === q.correctAnswer) {
+                        score++;
+                    } else {
+                        incorrectAnswers.push({
+                            question: q.question,
+                            correctAnswer: q.options[q.correctAnswer],
+                            yourAnswer: q.options[answer]
+                        });
+                    }
+                }
+            });
+
+            // Show score
+            scoreDisplay.innerText = `Your score: ${score} / ${questions.length}`;
+
+            // Show feedback for incorrect answers
+            feedback.innerHTML = '';
+            incorrectAnswers.forEach(ia => {
+                const feedbackItem = document.createElement('div');
+                feedbackItem.classList.add('incorrect');
+                feedbackItem.innerHTML = `<strong>Incorrect:</strong> ${ia.question} <br> <span class="correct-answer">Correct answer: ${ia.correctAnswer}</span>`;
+                feedback.appendChild(feedbackItem);
+            });
+
+            results.style.display = 'block';
+        }
+
+        // Handle form submission
+        submitBtn.addEventListener('click', function() {
+            calculateResults();
+        });
+
+        // Initialize quiz
+        renderQuestions();
+    </script>
+</body>
+</html>
